@@ -1,0 +1,6 @@
+{
+    "name": "Grizzl-E EV Charger",
+    "domains": ["binary_sensor", "sensor"],
+    "homeassistant": "20250821.0",
+    "iot_class": "local_polling"
+}

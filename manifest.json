@@ -1,0 +1,15 @@
+{
+  "domain": "grizzle_e",
+  "name": "Grizzl-E EV Charger",
+  "version": "0.2.0",
+  "documentation": "https://github.com/mclare/grizzle_e-for-HA",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@mclare"],
+  "iot_class": "local_polling",
+  "config_flow": true,
+  "integration_type": "hub",
+  "loggers": [],
+  "icon": "custom_components/grizzle_e/icon.png",
+  "logo": "custom_components/grizzle_e/logo.png"
+}
