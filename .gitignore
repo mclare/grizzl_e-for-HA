@@ -1,0 +1,9 @@
+# Python virtual environments
+.venv/
+venv/
+# Tests cache
+tests/__pycache__/
+
+# macOS Finder junk
+.DS_Store
+

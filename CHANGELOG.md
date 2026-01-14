@@ -8,6 +8,9 @@ Thanks to everyone for their enthusiasm and guidance!
  - HACS file structure refinements and home assistant version backwards compatibility information provided by https://github.com/lukavia
  - Change to Total Energy sensor to have it work with HA Energy dashboard, from issue https://github.com/mclare/grizzl_e-for-HA/issues/2 submitted by https://github.com/drasch
 
+### Added
+- Basic pytest tests
+
  ### Changed
 - Reuse HA’s shared aiohttp session and per-request timeout in init.py
     - Use async_get_clientsession(hass) and an aiohttp.ClientTimeout on the request via session.post(..., timeout=timeout).
