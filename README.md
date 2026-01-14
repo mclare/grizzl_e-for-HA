@@ -1,7 +1,7 @@
 # Grizzl-E EV Charger Home Assistant Integration
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub release](https://img.shields.io/github/release/mclare/grizzle_e-for-HA.svg)](https://github.com/mclare/grizzle_e-for-HA/releases)
+[![GitHub release](https://img.shields.io/github/release/mclare/grizzle_e-for-HA.svg)](https://github.com/mclare/grizzl_e-for-HA/releases)
 
 A Home Assistant integration for Grizzl-E EV chargers, providing sensors for monitoring the WiFi Grizzl-E charger.
 
@@ -89,6 +89,3 @@ Contributions are welcome! Please feel free to submit issues and pull requests. 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Todo
-- Make an actual release!
