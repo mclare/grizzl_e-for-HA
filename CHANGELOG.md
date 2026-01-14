@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.0
+- Initial release!
+
+
 ## [Unreleased] - January 2026
 Thanks to everyone for their enthusiasm and guidance!
 
