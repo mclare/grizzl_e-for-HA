@@ -122,6 +122,7 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             description_placeholders={"min_ports": str(MIN_PORTS), "max_ports": str(MAX_PORTS)}
         )
 
+    @staticmethod
     @callback
     def async_get_options_flow(config_entry):
         return GrizzleEOptionsFlow(config_entry)

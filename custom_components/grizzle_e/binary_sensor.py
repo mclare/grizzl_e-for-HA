@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     # Get the device and coordinator from hass.data
     if DOMAIN not in hass.data or entry.entry_id not in hass.data[DOMAIN]:
-        return False
+        return
         
     device = hass.data[DOMAIN][entry.entry_id]["device"]
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]

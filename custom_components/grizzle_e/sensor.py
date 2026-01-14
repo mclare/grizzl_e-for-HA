@@ -23,7 +23,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     # Get the device from hass.data
     if DOMAIN not in hass.data or entry.entry_id not in hass.data[DOMAIN]:
-        return False
+        return
             
     device = hass.data[DOMAIN][entry.entry_id]["device"]
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
@@ -42,7 +42,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     sensors = [
         GrizzleESensor(coordinator, "Power", "powerMeas", UnitOfPower.WATT, device_class=SensorDeviceClass.POWER),
         GrizzleESensor(coordinator, "Session Energy", "sessionEnergy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY),
-        GrizzleESensor(coordinator, "Total Energy", "totalEnergy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY),
+        GrizzleESensor(coordinator, "Total Energy", "totalEnergy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING),
         GrizzleESensor(coordinator, "Temperature 1", "temperature1", UnitOfTemperature.CELSIUS, device_class=SensorDeviceClass.TEMPERATURE),
         GrizzleESensor(coordinator, "Temperature 2", "temperature2", UnitOfTemperature.CELSIUS, device_class=SensorDeviceClass.TEMPERATURE),
         GrizzleESensor(coordinator, "RSSI", "RSSI", "dBm", device_class=SensorDeviceClass.SIGNAL_STRENGTH, entity_category=EntityCategory.DIAGNOSTIC),
@@ -91,7 +91,6 @@ class GrizzleESensor(CoordinatorEntity, SensorEntity):
     def device_info(self) -> DeviceInfo:
         """Return the device info."""
         return self.coordinator.device.device_info
-    """Numeric sensor for Grizzl-E charger."""
 
     def __init__(
         self,
