@@ -2,7 +2,7 @@
   "domain": "grizzle_e",
   "name": "Grizzl-E EV Charger",
   "version": "0.2.0",
-  "documentation": "https://github.com/mclare/grizzle_e-for-HA",
+  "documentation": "https://github.com/mclare/grizzl_e-for-HA",
   "requirements": [],
   "dependencies": [],
   "codeowners": ["@mclare"],
