@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.0
+- Clean HACS items like manifest.json
+- Remove look-a-like icons to transition to https://github.com/home-assistant/brands
+
 ## v0.1.0
 - Initial release!
 
