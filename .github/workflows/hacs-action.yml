@@ -1,2 +1,20 @@
-- name: HACS Action
-  uses: hacs/action@22.5.0
+# This workflow will install validate HACS integration based on https://www.hacs.xyz/docs/publish/action/
+name: HACS Validation
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+    - name: HACS Action
+      uses: hacs/action@22.5.0
