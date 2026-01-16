@@ -16,5 +16,9 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
 
     steps:
+    - uses: actions/checkout@v4
     - name: HACS Action
       uses: hacs/action@22.5.0
+      with:
+        category: integration
+        repository: ${{ github.repository }}
