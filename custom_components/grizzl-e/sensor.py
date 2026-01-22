@@ -46,10 +46,13 @@ async def async_setup_entry(hass, entry, async_add_entities):
         GrizzleESensor(coordinator, "Temperature 1", "temperature1", UnitOfTemperature.CELSIUS, device_class=SensorDeviceClass.TEMPERATURE),
         GrizzleESensor(coordinator, "Temperature 2", "temperature2", UnitOfTemperature.CELSIUS, device_class=SensorDeviceClass.TEMPERATURE),
         GrizzleESensor(coordinator, "RSSI", "RSSI", "dBm", device_class=SensorDeviceClass.SIGNAL_STRENGTH, entity_category=EntityCategory.DIAGNOSTIC),
-        GrizzleESensor(coordinator, "State", "state", None, device_class=SensorDeviceClass.ENUM, options=["unknown", "ready", "ready", "connected", "charging"]),
+        GrizzleESensor(coordinator, "State", "state", None, device_class=SensorDeviceClass.ENUM, options=["PowerUp", "SelfTest", "Standby", "Vehicle Connected", "Vehile Charging","Charing Complete","Disabled","Error"]),
         GrizzleESensor(coordinator, "Pilot State", "pilot", None, device_class=SensorDeviceClass.ENUM, options=["no_ev", "ev_connected"]),
         GrizzleESensor(coordinator, "Session Time", "sessionTime", UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION),
         GrizzleESensor(coordinator, "Session Money", "sessionMoney", CURRENCY_DOLLAR, device_class=SensorDeviceClass.MONETARY),
+        # Diagnostic and version information
+        GrizzleESensor(coordinator, "EVSE Version", "verFWMain", None, entity_category=EntityCategory.DIAGNOSTIC, state_class=None),
+        GrizzleESensor(coordinator, "WiFi Version", "verFWWifi", None, entity_category=EntityCategory.DIAGNOSTIC, state_class=None),
     ]
 
     # Add port-specific sensors

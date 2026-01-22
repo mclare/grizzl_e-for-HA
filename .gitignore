@@ -3,6 +3,7 @@
 venv/
 # Tests cache
 tests/__pycache__/
+sample_data/
 
 # macOS Finder junk
 .DS_Store
