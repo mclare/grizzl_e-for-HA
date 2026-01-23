@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.0
+- Mostly changes to terminology and instructions in README, as well as adding troubleshooting information.
+- Added HACS validation script, and updated hacs.json.
+- A PR has been submitted to https://github.com/home-assistant/brands to get logos etc
+
 ## v0.2.0
 - Clean HACS items like manifest.json
 - Remove look-a-like icons to transition to https://github.com/home-assistant/brands
