@@ -1,23 +1,27 @@
-# Grizzl-E EV Charger Home Assistant Integration
+# Grizzl-E EV  Home Assistant Integration
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/mclare/grizzl_e-for-HA/python-package.yml)
 [![GitHub release](https://img.shields.io/github/release/mclare/grizzl_e-for-HA.svg)](https://github.com/mclare/grizzl_e-for-HA/releases)
 
-A Home Assistant integration for Grizzl-E EVSEs (Electric Vehicle Supply Equipment, or chargers), providing sensors for monitoring the WiFi Grizzl-E EVSEs.
+A Home Assistant integration for Grizzl-E EVSEs (Electric Vehicle Supply Equipment, or charger), providing sensors for monitoring the WiFi Grizzl-E EVSEs.
 
-This integration is not affiliated with United Chargers or Grizzl-E (but is also made in Ontario, Canada).
+This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines) but does not work with chargers enrolled in the "Grizzl-E Club" or comercial chargers.
+
+This integration is not affiliated with United s or Grizzl-E (but is also made in Ontario, Canada). Please consult [United 's User Manuals](https://grizzl-e.com/user-manuals) can learn more about operating Grizzl-E EVSE.
+
+
 
 ## ⚠️ Security Note
-Did you know your United Chargers Grizzl-E EV WiFi enabled EVSE has an unauthenticated web interface? If you haven't visited the Grizzl-E web interface and set a password, you should do that right away. This integration assumes a username and password has been set.
+Did you know that your United Chargers Grizzl-E WiFi enabled EVSE has a web interface that is by default unauthenticated? If you haven't visited the Grizzl-E web interface, referred to in the user manuals as [Page Access](https://ecommerce-space.nyc3.digitaloceanspaces.com/Operation_Manual_V4_0_d5c730c075.pdf#Grizzl-EUltimate_OperationManual_V4.0.indd%3AAnchor%203%3A3092), and set a password, you should do that right away. This integration assumes a username and password has been set.
 
-Likewise, you should ensure that your EVSE is properly secured on your network from the rest of the internet.
+Even once a username and password is set, users should ensure that thier EVSE is properly secured on their network from the rest of the internet.
 
 ## Features
 
 This integration provides the following features:
 - Real-time monitoring of charging status and metrics
-- Support for multiple Grizzl-E charger models
+- Support for multiple Grizzl-E  models
 - Configurable polling interval
 - Temperature monitoring
 - Energy usage tracking
@@ -30,24 +34,24 @@ This integration provides the following features:
 2. Go to HACS → Integrations
 3. Click the three dots in the top right corner
 4. Select "Custom repositories"
-5. Add this repository URL: `https://github.com/mclare/grizzle_e-for-HA`
+5. Add this repository URL: `https://github.com/mclare/grizzl_e-for-HA`
 6. Select category: "Integration"
 7. Click "Add"
-8. Find "Grizzl-E EV Charger" in the list and click "Install"
+8. Find "Grizzl-E EV " in the list and click "Install"
 9. Restart Home Assistant
 10. Go to Settings > Devices & Services
-11. Click "+ Add Integration" and search for "Grizzl-E EV Charger"
-12. Follow the setup wizard to configure your charger
+11. Click "+ Add Integration" and search for "Grizzl-E EV "
+12. Follow the setup wizard to configure your 
 
 ### Manual Installation
 
-1. Download the latest release from the [Releases](https://github.com/mclare/grizzle_e-for-HA/releases) page
+1. Download the latest release from the [Releases](https://github.com/mclare/grizzl_e-for-HA/releases) page
 2. Extract the `grizzle_e` folder from the archive
 3. Copy the `grizzle_e` folder to your `custom_components` directory in your Home Assistant config
 4. Restart Home Assistant
 5. Go to Settings > Devices & Services
-6. Click "+ Add Integration" and search for "Grizzl-E EV Charger"
-7. Follow the setup wizard to configure your charger
+6. Click "+ Add Integration" and search for "Grizzl-E EV "
+7. Follow the setup wizard to configure your 
 
 ## Configuration
 
@@ -55,8 +59,8 @@ This integration provides the following features:
 
 1. Go to Settings > Devices & Services
 2. Click "+ Add Integration"
-3. Search for "Grizzl-E EV Charger"
-4. Enter your charger's IP address or hostname
+3. Search for "Grizzl-E EV "
+4. Enter your 's IP address or hostname
 5. Enter the username and password (default is usually admin/admin)
 
 ### Configuration via YAML
@@ -78,15 +82,15 @@ grizzle_e:
 - **Session Energy**: Energy used in current session (kWh)
 - **Total Energy**: Total energy used (kWh)
 - **Temperature 1/2**: Temperature sensors (°C)
-- **State**: Charger state (Ready/Connected/Charging)
+- **State**:  state (Ready/Connected/Charging)
 - **Pilot State**: EV connection status
 - **RSSI**: WiFi signal strength (dBm)
 
 ## Troubleshooting: Verify EVSE Connectivity Outside of Home Assistant
 
-If the integration fails to is running in Home Assistant, but cannot connect to your Grizzl-E EVSE, first verify that you can access your Grizzl-E EVSE over the network **without** Home Assistant involved.
+If the integration fails, and the integreation is running in Home Assistant, but cannot connect to the Grizzl-E EVSE, first verify that you can access your Grizzl-E EVSE over the network **without** Home Assistant involved.
 
-This check helps confirm that your network, credentials, and EVSE are working correctly before adding any Home Assistant complexity.
+This check helps confirm that your network, credentials, and the EVSE are working correctly before adding any Home Assistant complexity.
 
 ---
 
@@ -100,14 +104,14 @@ You will need:
 
 ---
 
-## Testing Connectivity
+### Testing Connectivity
 
-### Step 1: Verify Web Interface Access
+#### Step 1: Verify Web Interface Access
 
 Verify that you can access the Grizzl-E EVSE's web interface with your regular web browser. The bottom of the page will show the EVSE Version, WiFi Version and Serial Number.
 
 
-### Step 2, option 1: Command line (macOS and Linux)
+#### Step 2, option 1: Command line (macOS and Linux)
 
 If you are comfortable using a terminal, you can test connectivity using `curl`, replacing `<username>`, `<password>`, and `<EVSE_IP>` with your actual values.
 
@@ -116,14 +120,14 @@ curl -sS -X POST -H 'Authorization: Basic '"$(printf %s '<username>:<password>' 
 ```
 There is also a way to do this with Windows PowerShell, but if you know how to initiate a network request like this in PowerShell, you know how to adapt a curl command.
 
-### Step 2, option 2: Using a graphical tool
+#### Step 2, option 2: Using a graphical tool
 
 If you are not comfortable using the command line, you can use a graphical HTTP client such as:
 
 - **[Postman](https://www.postman.com/)** (Windows, macOS, Linux)
 - **[Insomnia](https://insomnia.rest/)**
 
-#### Request details
+##### Request details
 
 - **Method:** `POST`
 - **URL:** `http://<EVSE_IP>/main`
@@ -136,7 +140,7 @@ If you are not comfortable using the command line, you can use a graphical HTTP 
 - **Headers:**
 - No custom headers are required when using Basic Auth (the tool will add them automatically)
 
-### Expected result
+#### Expected result
 
 If the request is successful, the EVSE will return a **JSON response** containing status information.
 
