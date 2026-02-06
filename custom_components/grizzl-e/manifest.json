@@ -1,5 +1,5 @@
 {
-  "domain": "grizzl-e",
+  "domain": "grizzl_e",
   "name": "Grizzl-E EV Charger",
   "version": "0.2.0",
   "documentation": "https://github.com/mclare/grizzl_e-for-HA",
