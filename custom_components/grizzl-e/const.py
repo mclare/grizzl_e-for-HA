@@ -1,7 +1,7 @@
 """Constants for the Grizzl-E integration."""
 
 # Integration domain
-DOMAIN = "grizzle_e"
+DOMAIN = "grizzl-e"
 DEFAULT_NAME = "Grizzl-E Charger"
 MANUFACTURER = "United Chargers"
 MODEL = "Grizzl-E Smart"
