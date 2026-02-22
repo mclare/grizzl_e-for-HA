@@ -1,0 +1,38 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "title": "Connect to Grizzl-E Charger",
+          "description": "Enter connection details",
+          "data": {
+            "host": "Host (IP or hostname)",
+            "username": "Username",
+            "password": "Password"
+          }
+        },
+        "connection": {
+          "title": "Connect to Grizzl-E Charger",
+          "description": "Enter connection details for your Grizzl-E EVSE",
+          "data": {
+            "host": "Host (IP or hostname)",
+            "username": "Username",
+            "password": "Password"
+          }
+        },
+        "ports": {
+          "title": "Number of Ports",
+          "description": "Select the number of charging ports on your Grizzl-E device ({min_ports}–{max_ports})",
+          "data": {
+            "ports": "Number of Ports"
+          }
+        }
+      },
+      "error": {
+        "cannot_connect": "Failed to connect",
+        "invalid_auth": "Authentication failed",
+        "timeout": "Connection timed out",
+        "unknown": "Unknown error"
+      }
+    }
+  }
+  
