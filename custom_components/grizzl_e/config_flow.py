@@ -32,7 +32,7 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        return await self.async_step_connection()
+        return await self.async_step_connection(user_input)
 
     async def async_step_connection(self, user_input=None):
         """Handle the connection step."""

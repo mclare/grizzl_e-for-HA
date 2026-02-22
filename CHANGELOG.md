@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0
+- First full release!
+- **Breaking changes from pre-release versions**: the domain has changed from `grizzl-e` to `grizzl_e` to match some of the restricted namespaces across Home Assistant/HACS. This will require a reinstallation of the integration.
+    - Updated manifest.json: DOMAIN = "grizzl_e"
+    - Renamed integration directory: custom_components/grizzl-e/ becomes custom_components/grizzl_e/
+    - Updated const.py: DOMAIN = "grizzl_e" to match manifest.json
+    - Fixed config_flow.py: async_step_user now forwards to async_step_connection(user_input) to resolve “Invalid handler specified”
+    - Updated strings.json: Added entries for connection and ports steps and error keys used by the flow
+- There is now a grizzle_e entry in Home Assistants' Brands repository, and the integration will be submitted to HACS.
+
 ## v0.3.0
 - Mostly changes to terminology and instructions in README, as well as adding troubleshooting information.
 - Added HACS validation script, and updated hacs.json.
