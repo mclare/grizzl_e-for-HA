@@ -5,9 +5,9 @@
   "config_flow": true,
   "documentation": "https://github.com/mclare/grizzl_e-for-HA",
   "dependencies": [],
+  "integration_type": "hub",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mclare/grizzl_e-for-HA/issues",
-  "integration_type": "hub",
   "requirements": [],
-  "version": "1.3"
+  "version": "1.4"
 }
