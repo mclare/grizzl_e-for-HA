@@ -6,7 +6,7 @@
 
 A Home Assistant integration for Grizzl-E EVSEs (Electric Vehicle Supply Equipment, or charger), providing sensors for monitoring the WiFi Grizzl-E EVSEs.
 
-This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines) but does not work with chargers enrolled in the "Grizzl-E Club" or comercial chargers.
+This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines) but does not work with chargers enrolled in the "Grizzl-E Club" or commercial chargers.
 
 This integration is not affiliated with United s or Grizzl-E (but is also made in Ontario, Canada). Please consult [United 's User Manuals](https://grizzl-e.com/user-manuals) can learn more about operating Grizzl-E EVSE.
 
@@ -15,7 +15,7 @@ This integration is not affiliated with United s or Grizzl-E (but is also made i
 ## ⚠️ Security Note
 Did you know that your United Chargers Grizzl-E WiFi enabled EVSE has a web interface that is by default unauthenticated? If you haven't visited the Grizzl-E web interface, referred to in the user manuals as [Page Access](https://ecommerce-space.nyc3.digitaloceanspaces.com/Operation_Manual_V4_0_d5c730c075.pdf#Grizzl-EUltimate_OperationManual_V4.0.indd%3AAnchor%203%3A3092), and set a password, you should do that right away. This integration assumes a username and password has been set.
 
-Even once a username and password is set, users should ensure that thier EVSE is properly secured on their network from the rest of the internet.
+Even once a username and password is set, users should ensure that their EVSE is properly secured on their network from the rest of the internet.
 
 ## Features
 
@@ -88,7 +88,7 @@ grizzle_e:
 
 ## Troubleshooting: Verify EVSE Connectivity Outside of Home Assistant
 
-If the integration fails, and the integreation is running in Home Assistant, but cannot connect to the Grizzl-E EVSE, first verify that you can access your Grizzl-E EVSE over the network **without** Home Assistant involved.
+If the integration fails, and the integration is running in Home Assistant, but cannot connect to the Grizzl-E EVSE, first verify that you can access your Grizzl-E EVSE over the network **without** Home Assistant involved.
 
 This check helps confirm that your network, credentials, and the EVSE are working correctly before adding any Home Assistant complexity.
 
