@@ -8,7 +8,7 @@ A Home Assistant integration for Grizzl-E EVSEs (Electric Vehicle Supply Equipme
 
 This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines) but does not work with chargers enrolled in the "Grizzl-E Club" or commercial chargers.
 
-This integration is not affiliated with United Chargers or Grizzl-E (but is also made in Ontario, Canada). Please consult [United Charger's User Manuals](https://grizzl-e.com/user-manuals) can learn more about operating Grizzl-E EVSE.
+This integration is not affiliated with United Chargers or Grizzl-E (but is also made in Ontario, Canada). Please consult [United Charger's User Manuals](https://grizzl-e.com/user-manuals) can learn more about operating Grizzl-E EVSEs.
 
 
 
@@ -21,7 +21,7 @@ Even once a username and password is set, users should ensure that their EVSE is
 
 This integration provides the following features:
 - Real-time monitoring of charging status and metrics
-- Support for multiple Grizzl-E  models
+- Support for multiple Grizzl-E models
 - Configurable polling interval
 - Temperature monitoring
 - Energy usage tracking
@@ -37,10 +37,10 @@ This integration provides the following features:
 5. Add this repository URL: `https://github.com/mclare/grizzl_e-for-HA`
 6. Select category: "Integration"
 7. Click "Add"
-8. Find "Grizzl-E EV " in the list and click "Install"
+8. Find "Grizzl-E EV" in the list and click "Install"
 9. Restart Home Assistant
 10. Go to Settings > Devices & Services
-11. Click "+ Add Integration" and search for "Grizzl-E EV "
+11. Click "+ Add Integration" and search for "Grizzl-E EV"
 12. Follow the setup wizard to configure your 
 
 ### Manual Installation
@@ -59,8 +59,8 @@ This integration provides the following features:
 
 1. Go to Settings > Devices & Services
 2. Click "+ Add Integration"
-3. Search for "Grizzl-E EV "
-4. Enter your 's IP address or hostname
+3. Search for "Grizzl-E EV"
+4. Enter the IP address or hostname of your EVSE
 5. Enter the username and password (default is usually admin/admin)
 
 ### Configuration via YAML
@@ -100,7 +100,7 @@ You will need:
 - The **IP address** of your Grizzl-E EVSE
 - The **username**
 - The **password**
-- Your computer and EVSE on the **same network** or the firewall rules to allow access
+- Home Assistant and the EVSE on the **same network** or the firewall rules to allow access
 
 ---
 
