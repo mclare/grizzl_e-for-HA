@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.6
+- **Fix Grizzl-E Duo port 2 reporting** ([#23](https://github.com/mclare/grizzl_e-for-HA/issues/23)). The Duo does not report its second cable through `curMeas2`/`voltMeas2` (those are per-phase fields that stay `0`). Cable 2 now reads current from `curMeas1C2`, voltage from the shared `voltMeas1`, and power from `powerMeas2`.
+    - Added a `port_key()` mapping helper in `const.py` that resolves each per-cable measurement to the correct JSON key for a given port.
+    - Multi-port units now expose Power, Current, Voltage, Session Energy, Total Energy, Session Time, Session Money, State and Pilot State **per cable** (previously only Current/Voltage were per-port and everything else was cable-1 only). Binary sensors (Session Started, Pilot Connected) are now per cable too.
+    - Port 1 keeps its original entity `unique_id`s, so existing single-port setups keep their history. Port 2+ get disambiguated ids.
+    - Enum sensors (State, Pilot State) no longer carry an invalid `measurement` state class.
+    - Added regression tests using the real Duo payloads from issue #23.
+
 ## v1.0
 - First full release!
 - **Breaking changes from pre-release versions**: the domain has changed from `grizzl-e` to `grizzl_e` to match some of the restricted namespaces across Home Assistant/HACS. This will require a reinstallation of the integration.

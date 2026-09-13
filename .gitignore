@@ -20,3 +20,7 @@ venv.bak/
 # IDEs
 .idea
 .vscode
+
+# Python bytecode
+__pycache__/
+*.pyc
