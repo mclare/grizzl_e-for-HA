@@ -6,7 +6,7 @@
 
 A Home Assistant integration for Grizzl-E EVSEs (Electric Vehicle Supply Equipment, or charger), providing sensors for monitoring the WiFi Grizzl-E EVSEs.
 
-This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines) but does not work with chargers enrolled in the "Grizzl-E Club" or commercial chargers.
+This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines).
 
 This integration is not affiliated with United Chargers or Grizzl-E (but is also made in Ontario, Canada). Please consult [United Charger's User Manuals](https://grizzl-e.com/user-manuals) can learn more about operating Grizzl-E EVSEs.
 
