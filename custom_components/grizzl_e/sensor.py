@@ -46,7 +46,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         GrizzleESensor(coordinator, "State", "state", None, device_class=SensorDeviceClass.ENUM, options=["PowerUp", "SelfTest", "Standby", "Vehicle Connected", "Vehicle Charging", "Charging Complete", "Disabled", "Error"]),
         GrizzleESensor(coordinator, "Pilot State", "pilot", None, device_class=SensorDeviceClass.ENUM, options=["no_ev", "ev_connected"]),
         GrizzleESensor(coordinator, "Session Time", "sessionTime", UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION),
-        GrizzleESensor(coordinator, "Session Money", "sessionMoney", CURRENCY_DOLLAR, device_class=SensorDeviceClass.MONETARY),
         # Diagnostic and version information
         GrizzleESensor(coordinator, "EVSE Version", "verFWMain", None, entity_category=EntityCategory.DIAGNOSTIC, state_class=None),
         GrizzleESensor(coordinator, "WiFi Version", "verFWWifi", None, entity_category=EntityCategory.DIAGNOSTIC, state_class=None),
@@ -76,7 +75,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         add("session_energy", "Session Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY)
         add("total_energy", "Total Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING)
         add("session_time", "Session Time", UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION)
-        add("session_money", "Session Money", CURRENCY_DOLLAR, device_class=SensorDeviceClass.MONETARY)
         add("state", "State", None, device_class=SensorDeviceClass.ENUM, state_class=None, options=state_options)
         add("pilot", "Pilot State", None, device_class=SensorDeviceClass.ENUM, state_class=None, options=["no_ev", "ev_connected"])
 
