@@ -36,7 +36,6 @@ PORT_FIELD_KEYS = {
     "pilot": "pilot",
     "session_time": "sessionTime",
     "session_energy": "sessionEnergy",
-    "session_money": "sessionMoney",
     "total_energy": "totalEnergy",
     "session_started": "sessionStarted",
 }
