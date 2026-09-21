@@ -20,10 +20,10 @@
           }
         },
         "ports": {
-          "title": "Number of Ports",
+          "title": "Number of Charger Ports",
           "description": "Select the number of charging ports on your Grizzl-E device ({min_ports}–{max_ports})",
           "data": {
-            "ports": "Number of Ports"
+            "ports": "Number of Charger Ports"
           }
         }
       },

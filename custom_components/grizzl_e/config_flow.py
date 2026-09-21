@@ -12,6 +12,7 @@ from .const import (
     CONF_PORTS,
     CONF_USERNAME,
     DEFAULT_PORTS,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MIN_PORTS,
     MAX_PORTS,
@@ -125,22 +126,20 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return GrizzleEOptionsFlow(config_entry)
+        return GrizzleEOptionsFlow()
 
 
 class GrizzleEOptionsFlow(config_entries.OptionsFlow):
     """Handle options for Grizzl-E EV Charger."""
 
-    def __init__(self, config_entry):
-        self.config_entry = config_entry
-
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        current = self.config_entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL)
         schema = vol.Schema(
             {
-                vol.Required("scan_interval", default=10): cv.positive_int,
+                vol.Required("scan_interval", default=current): cv.positive_int,
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema)

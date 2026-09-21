@@ -18,7 +18,7 @@ MIN_PORTS = 1
 MAX_PORTS = 3
 
 # Default values
-DEFAULT_HOST = "192.168.30.133"
+DEFAULT_HOST = ""
 DEFAULT_SCAN_INTERVAL = 5
 
 # Timeout values (in seconds)
