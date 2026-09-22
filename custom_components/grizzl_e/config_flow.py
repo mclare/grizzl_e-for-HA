@@ -1,28 +1,34 @@
 import aiohttp
 import asyncio
 import async_timeout
+import logging
 import voluptuous as vol
+
 from homeassistant import config_entries
 from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.selector import (
+    SelectOptionDict,
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
+)
 
 from .const import (
     CONF_HOST,
     CONF_PASSWORD,
     CONF_PORTS,
     CONF_USERNAME,
+    CONNECT_TIMEOUT,
+    DEFAULT_HOST,
+    DEFAULT_NAME,
     DEFAULT_PORTS,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
-    MIN_PORTS,
-    MAX_PORTS,
     REQUEST_TIMEOUT,
-    CONNECT_TIMEOUT,
     SOCKET_TIMEOUT,
-    DEFAULT_HOST, DEFAULT_NAME
 )
 
-import logging
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -46,12 +52,14 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     total=REQUEST_TIMEOUT,
                     connect=CONNECT_TIMEOUT,
                     sock_connect=CONNECT_TIMEOUT,
-                    sock_read=SOCKET_TIMEOUT
+                    sock_read=SOCKET_TIMEOUT,
                 )
                 async with aiohttp.ClientSession(timeout=timeout) as session:
                     url = f"http://{user_input[CONF_HOST]}/main"
-                    auth = aiohttp.BasicAuth(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
-                    
+                    auth = aiohttp.BasicAuth(
+                        user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+                    )
+
                     try:
                         # Outer timeout as a safety net
                         async with async_timeout.timeout(REQUEST_TIMEOUT + 1):
@@ -81,18 +89,18 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_PASSWORD): cv.string,
             }
         )
-        
+
         return self.async_show_form(
             step_id="connection",
             data_schema=schema,
             errors=errors,
-            description_placeholders={"host": "http://" + DEFAULT_HOST}
+            description_placeholders={"host": "http://" + DEFAULT_HOST},
         )
 
     async def async_step_ports(self, user_input=None):
         """Handle the ports configuration step."""
         errors = {}
-        
+
         if user_input is not None:
             return self.async_create_entry(
                 title=DEFAULT_NAME,
@@ -100,7 +108,7 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_HOST: self._host,
                     CONF_USERNAME: self._username,
                     CONF_PASSWORD: self._password,
-                    CONF_PORTS: user_input[CONF_PORTS]
+                    CONF_PORTS: int(user_input[CONF_PORTS]),
                 },
             )
 
@@ -108,19 +116,23 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(
                     CONF_PORTS,
-                    default=DEFAULT_PORTS,
-                ): vol.All(
-                    vol.Coerce(int),
-                    vol.Range(min=MIN_PORTS, max=MAX_PORTS)
+                    default=str(DEFAULT_PORTS),
+                ): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            SelectOptionDict(value="1", label="1 EVSE port (Standard)"),
+                            SelectOptionDict(value="2", label="2 EVSE ports (Duo)"),
+                        ],
+                        mode=SelectSelectorMode.DROPDOWN,
+                    )
                 )
             }
         )
-        
+
         return self.async_show_form(
             step_id="ports",
             data_schema=schema,
             errors=errors,
-            description_placeholders={"min_ports": str(MIN_PORTS), "max_ports": str(MAX_PORTS)}
         )
 
     @staticmethod

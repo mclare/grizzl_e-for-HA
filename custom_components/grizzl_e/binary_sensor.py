@@ -18,6 +18,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
     # Set device info on coordinator for binary sensors to access
     coordinator.device = device
 
+    # Ensure we have fresh data
+    if coordinator.data is None:
+        await coordinator.async_config_entry_first_refresh()
+
     num_ports = entry.data.get(CONF_PORTS, 1)
 
     binaries = []
@@ -51,6 +55,8 @@ class GrizzleEBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
     @property
     def is_on(self):
+        if not self.coordinator.data:
+            return None
         val = self.coordinator.data.get(self._key)
         if isinstance(val, (int, float)):
             return val != 0

@@ -21,11 +21,12 @@ class GrizzleEDevice:
         """
         data = getattr(self.coordinator, "data", None) or {}
         # Prefer payload model when present, fallback to static default
-        model = data.get("model") or MODEL
+        model = str(data.get("model") or MODEL)
         # Use EVSE main firmware as device software version; trim whitespace
-        sw_version = (data.get("verFWMain") or "").strip() or None
+        sw_version = str(data.get("verFWMain") or "").strip() or None
         # Use serial if available for nicer identification in registry
-        serial = data.get("serialNum") or data.get("stationId") or None
+        serial = data.get("serialNum") or data.get("stationId")
+        serial = str(serial) if serial is not None else None
 
         return DeviceInfo(
             identifiers={(DOMAIN, self.entry.entry_id)},
