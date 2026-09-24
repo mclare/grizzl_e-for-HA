@@ -23,4 +23,5 @@ venv.bak/
 
 # Python bytecode
 __pycache__/
+*/__pycache__/
 *.pyc
