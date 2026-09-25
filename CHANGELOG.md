@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.7
+This update primarily addresses issues with the values collecting properly integrating with Home Assistant's Energy infrastructure. There are a few updates to the settinga and instuation process.
+
+- Removed the `sessionMoney` value because it does not appear that the EVSEs do not appear to be sending meaningful information (money) on that value anyway.
+- Eliminate duplicate unique_id collisions to prevent dropping per-port entities
+- Fix state_class mismatch by preferring per-port sensors over device-wide ones 
+- Standardize state_options list to prevent version drift - Fix multi-port (Duo) support so Port 1 retains per-port entities
+- Resolve binary sensor startup crash by using consistent safe data access
+- Ensure binary sensors populate data on the first poll
+
+
 ## v1.6
 - **Fix Grizzl-E Duo port 2 reporting** ([#23](https://github.com/mclare/grizzl_e-for-HA/issues/23)). The Duo does not report its second cable through `curMeas2`/`voltMeas2` (those are per-phase fields that stay `0`). Cable 2 now reads current from `curMeas1C2`, voltage from the shared `voltMeas1`, and power from `powerMeas2`.
     - Added a `port_key()` mapping helper in `const.py` that resolves each per-cable measurement to the correct JSON key for a given port.
