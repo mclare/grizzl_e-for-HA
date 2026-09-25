@@ -1,38 +1,51 @@
 {
-    "config": {
-      "step": {
-        "user": {
-          "title": "Connect to Grizzl-E Charger",
-          "description": "Enter connection details",
-          "data": {
-            "host": "Host (IP or hostname)",
-            "username": "Username",
-            "password": "Password"
-          }
-        },
-        "connection": {
-          "title": "Connect to Grizzl-E Charger",
-          "description": "Enter connection details for your Grizzl-E EVSE",
-          "data": {
-            "host": "Host (IP or hostname)",
-            "username": "Username",
-            "password": "Password"
-          }
-        },
-        "ports": {
-          "title": "Number of Ports",
-          "description": "Select the number of charging ports on your Grizzl-E device ({min_ports}–{max_ports})",
-          "data": {
-            "ports": "Number of Ports"
-          }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Grizzl-E Charger",
+        "description": "Enter connection details",
+        "data": {
+          "host": "Host (IP or hostname)",
+          "username": "Username",
+          "password": "Password"
         }
       },
-      "error": {
-        "cannot_connect": "Failed to connect",
-        "invalid_auth": "Authentication failed",
-        "timeout": "Connection timed out",
-        "unknown": "Unknown error"
+      "connection": {
+        "title": "Connect to Grizzl-E Charger",
+        "description": "Enter connection details for your Grizzl-E EVSE",
+        "data": {
+          "host": "Host (IP or hostname)",
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "ports": {
+        "title": "Number of Ports",
+        "description": "Select the number of charging ports on your Grizzl-E device",
+        "data": {
+          "ports": "EVSE ports"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Authentication failed",
+      "timeout": "Connection timed out",
+      "unknown": "Unknown error"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Grizzl-E Options",
+        "description": "Configure the polling frequency for your charger.",
+        "data": {
+          "scan_interval": "Update Interval (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "How often (in seconds) Home Assistant fetches data from the charger."
+        }
       }
     }
   }
-  
+}

@@ -43,9 +43,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         GrizzleESensor(coordinator, "Temperature 1", "temperature1", UnitOfTemperature.CELSIUS, device_class=SensorDeviceClass.TEMPERATURE),
         GrizzleESensor(coordinator, "Temperature 2", "temperature2", UnitOfTemperature.CELSIUS, device_class=SensorDeviceClass.TEMPERATURE),
         GrizzleESensor(coordinator, "RSSI", "RSSI", "dBm", device_class=SensorDeviceClass.SIGNAL_STRENGTH, entity_category=EntityCategory.DIAGNOSTIC),
-        GrizzleESensor(coordinator, "State", "state", None, device_class=SensorDeviceClass.ENUM, options=["PowerUp", "SelfTest", "Standby", "Vehicle Connected", "Vehicle Charging", "Charging Complete", "Disabled", "Error"]),
-        GrizzleESensor(coordinator, "Pilot State", "pilot", None, device_class=SensorDeviceClass.ENUM, options=["no_ev", "ev_connected"]),
-        GrizzleESensor(coordinator, "Session Time", "sessionTime", UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION),
         # Diagnostic and version information
         GrizzleESensor(coordinator, "EVSE Version", "verFWMain", None, entity_category=EntityCategory.DIAGNOSTIC, state_class=None),
         GrizzleESensor(coordinator, "WiFi Version", "verFWWifi", None, entity_category=EntityCategory.DIAGNOSTIC, state_class=None),
@@ -54,7 +51,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     # Per-cable/port sensors. On multi-cable units (e.g. the Grizzl-E Duo) the
     # second cable reports through a different set of JSON keys, resolved by
     # port_key(); see const.py and issue #23.
-    state_options = ["PowerUp", "SelfTest", "Standby", "Vehicle Connected", "Vehile Charging", "Charing Complete", "Disabled", "Error"]
+    state_options = ["PowerUp", "SelfTest", "Standby", "Vehicle Connected", "Vehicle Charging", "Charging Complete", "Disabled", "Error"]
 
     for port in range(1, num_ports + 1):
         port_suffix = f" Port {port}" if num_ports > 1 else ""
@@ -72,7 +69,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         add("power", "Power", UnitOfPower.WATT, device_class=SensorDeviceClass.POWER)
         add("current", "Current", UnitOfElectricCurrent.AMPERE, device_class=SensorDeviceClass.CURRENT)
         add("voltage", "Voltage", UnitOfElectricPotential.VOLT, device_class=SensorDeviceClass.VOLTAGE)
-        add("session_energy", "Session Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY)
+        add("session_energy", "Session Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING)
         add("total_energy", "Total Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING)
         add("session_time", "Session Time", UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION)
         add("state", "State", None, device_class=SensorDeviceClass.ENUM, state_class=None, options=state_options)

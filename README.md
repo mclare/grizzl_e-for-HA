@@ -63,17 +63,6 @@ This integration provides the following features:
 4. Enter the IP address or hostname of your EVSE
 5. Enter the username and password (default is usually admin/admin)
 
-### Configuration via YAML
-
-```yaml
-# Example configuration.yaml entry
-grizzle_e:
-  host: YOUR_EVSE_IP_ADDRESS
-  username: admin
-  password: yourpassword
-  scan_interval: 30  # Optional, in seconds
-```
-
 ## Available Sensors
 
 - **Current**: Current charging current (A)
