@@ -11,6 +11,19 @@ CONF_HOST = "host"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 CONF_PORTS = "ports"
+CONF_SCAN_INTERVAL = "scan_interval"
+
+# How the entry talks to the charger. Entries created before cloud support
+# have no connection type and are local.
+CONF_CONNECTION_TYPE = "connection_type"
+CONNECTION_LOCAL = "local"
+CONNECTION_CLOUD = "cloud"
+
+# Grizzl-E Connect cloud configuration keys
+CONF_EMAIL = "email"
+CONF_TOKEN = "token"
+CONF_REFRESH_TOKEN = "refresh_token"
+CONF_STATION_ID = "station_id"
 
 # Default values
 DEFAULT_PORTS = 1
@@ -20,6 +33,15 @@ MAX_PORTS = 3
 # Default values
 DEFAULT_HOST = ""
 DEFAULT_SCAN_INTERVAL = 5
+# The cloud is polled less often than the charger on the LAN.
+DEFAULT_CLOUD_SCAN_INTERVAL = 30
+MIN_CLOUD_SCAN_INTERVAL = 10
+
+# Charging modes accepted by the cloud (the app's StationMode enum).
+CLOUD_CHARGE_MODES = ["Active", "Inactive", "Schedule"]
+
+# Schedule and rate zone days, indexed the way the cloud stores them (0=Sunday).
+WEEKDAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
 # Timeout values (in seconds)
 REQUEST_TIMEOUT = 10  # Total request timeout

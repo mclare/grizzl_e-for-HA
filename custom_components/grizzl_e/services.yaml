@@ -1,0 +1,148 @@
+set_schedule:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: grizzl_e
+    schedule_id:
+      example: "6aca7bd1f68a64e58409bff0"
+      selector:
+        text:
+    name:
+      example: "Off-peak"
+      selector:
+        text:
+    start:
+      example: "23:00:00"
+      selector:
+        time:
+    end:
+      example: "07:00:00"
+      selector:
+        time:
+    days:
+      selector:
+        select:
+          multiple: true
+          translation_key: weekday
+          options:
+            - sunday
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
+    all_day:
+      selector:
+        boolean:
+    current_limit:
+      selector:
+        number:
+          min: 1
+          max: 80
+          unit_of_measurement: A
+    connector:
+      selector:
+        number:
+          min: 0
+          max: 8
+
+delete_schedule:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: grizzl_e
+    schedule_id:
+      required: true
+      example: "6aca7bd1f68a64e58409bff0"
+      selector:
+        text:
+
+set_rate_zone:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: grizzl_e
+    zone_id:
+      example: "6ac6d45d0528d5cbde572d6f"
+      selector:
+        text:
+    name:
+      example: "On-peak"
+      selector:
+        text:
+    price:
+      example: 0.12
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: any
+          mode: box
+    start:
+      example: "07:00:00"
+      selector:
+        time:
+    end:
+      example: "11:00:00"
+      selector:
+        time:
+    days:
+      selector:
+        select:
+          multiple: true
+          translation_key: weekday
+          options:
+            - sunday
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
+    all_day:
+      selector:
+        boolean:
+    summer_price:
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: any
+          mode: box
+
+delete_rate_zone:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: grizzl_e
+    zone_id:
+      required: true
+      example: "6ac6d45d0528d5cbde572d6f"
+      selector:
+        text:
+
+set_base_rate:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: grizzl_e
+    price:
+      required: true
+      example: 0.10
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: any
+          mode: box

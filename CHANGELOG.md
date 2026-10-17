@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+- **Grizzl-E Connect cloud support**, alongside the existing local web interface connection. When adding the integration, choose Local or Grizzl-E Connect cloud (email and password).
+    - Sensors and binary sensors for station and per-connector status, power, current, voltage, temperature, and session energy, time and cost
+    - Charge Mode select (Active / Inactive / Schedule), Current Limit number, Reboot button, and a switch per schedule or rate zone
+    - Services to create, update and delete schedules and rate zones, and to set the base electricity rate
+    - Expired tokens are refreshed automatically; if the cloud rejects the credentials, Home Assistant asks you to sign in again
+- Existing local entries are unchanged: same entities and unique IDs
+- The config flow no longer imports `async_timeout`, which current Home Assistant doesn't ship
+- The options flow works on Home Assistant versions before 2024.11 again
+
 ## v1.7
 This update primarily addresses issues with the values collecting properly integrating with Home Assistant's Energy infrastructure. There are a few updates to the settinga and instuation process.
 

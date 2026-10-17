@@ -1,0 +1,220 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Grizzl-E Charger",
+        "description": "Choose how Home Assistant should talk to your Grizzl-E EVSE.",
+        "menu_options": {
+          "connection": "Local: the charger's web interface (Page Access)",
+          "cloud": "Grizzl-E Connect cloud: email and password"
+        }
+      },
+      "connection": {
+        "title": "Connect to Grizzl-E Charger",
+        "description": "Enter connection details for your Grizzl-E EVSE",
+        "data": {
+          "host": "Host (IP or hostname)",
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "ports": {
+        "title": "Number of Ports",
+        "description": "Select the number of charging ports on your Grizzl-E device",
+        "data": {
+          "ports": "EVSE ports"
+        }
+      },
+      "cloud": {
+        "title": "Grizzl-E Connect",
+        "description": "Sign in with the account you use in the Grizzl-E Connect app.",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        }
+      },
+      "station": {
+        "title": "Choose a charger",
+        "description": "Select the charger to add. Add the integration again for each additional charger.",
+        "data": {
+          "station_id": "Charger"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in to Grizzl-E Connect again",
+        "description": "Grizzl-E Connect no longer accepts the saved credentials for {account}.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Authentication failed",
+      "timeout": "Connection timed out",
+      "unknown": "Unknown error",
+      "account_not_verified": "This account's email address isn't verified yet. Finish verification in the Grizzl-E Connect app first.",
+      "station_not_found": "This charger isn't on that Grizzl-E Connect account."
+    },
+    "abort": {
+      "already_configured": "This charger is already configured",
+      "no_stations": "There are no chargers on this Grizzl-E Connect account",
+      "reauth_successful": "Re-authentication was successful"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Grizzl-E Options",
+        "description": "Configure the polling frequency for your charger. Cloud connections can't poll more often than every 10 seconds.",
+        "data": {
+          "scan_interval": "Update Interval (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "How often (in seconds) Home Assistant fetches data from the charger or the Grizzl-E Connect cloud."
+        }
+      }
+    }
+  },
+  "selector": {
+    "weekday": {
+      "options": {
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
+      }
+    }
+  },
+  "services": {
+    "set_schedule": {
+      "name": "Set schedule",
+      "description": "Create a charging schedule, or update one by its ID. When updating, omitted fields keep their current values. Turn schedules on and off with their switches; the charger follows them when its charge mode is Schedule.",
+      "fields": {
+        "device_id": {
+          "name": "Charger",
+          "description": "The Grizzl-E charger (set up through the Grizzl-E Connect cloud)."
+        },
+        "schedule_id": {
+          "name": "Schedule ID",
+          "description": "ID of the schedule to update (the schedule_id attribute of its switch). Leave empty to create a new schedule."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Name shown in the app."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start time, in the charger's timezone."
+        },
+        "end": {
+          "name": "End",
+          "description": "End time, in the charger's timezone."
+        },
+        "days": {
+          "name": "Days",
+          "description": "Days the window applies to. Defaults to every day for a new one."
+        },
+        "all_day": {
+          "name": "All day",
+          "description": "Apply all day instead of between start and end."
+        },
+        "current_limit": {
+          "name": "Current limit",
+          "description": "Maximum current while this schedule is active."
+        },
+        "connector": {
+          "name": "Connector",
+          "description": "0 for all connectors, or 1 and 2 for the cables of a Duo."
+        }
+      }
+    },
+    "delete_schedule": {
+      "name": "Delete schedule",
+      "description": "Delete a charging schedule.",
+      "fields": {
+        "device_id": {
+          "name": "Charger",
+          "description": "The Grizzl-E charger (set up through the Grizzl-E Connect cloud)."
+        },
+        "schedule_id": {
+          "name": "Schedule ID",
+          "description": "ID of the schedule to delete (the schedule_id attribute of its switch)."
+        }
+      }
+    },
+    "set_rate_zone": {
+      "name": "Set rate zone",
+      "description": "Create a time-of-use electricity rate zone, or update one by its ID. When updating, omitted fields keep their current values.",
+      "fields": {
+        "device_id": {
+          "name": "Charger",
+          "description": "The Grizzl-E charger (set up through the Grizzl-E Connect cloud)."
+        },
+        "zone_id": {
+          "name": "Rate zone ID",
+          "description": "ID of the rate zone to update (the schedule_id attribute of its switch). Leave empty to create a new rate zone."
+        },
+        "price": {
+          "name": "Price",
+          "description": "Price per kWh in the station's currency."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Name shown in the app."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start time, in the charger's timezone."
+        },
+        "end": {
+          "name": "End",
+          "description": "End time, in the charger's timezone."
+        },
+        "days": {
+          "name": "Days",
+          "description": "Days the window applies to. Defaults to every day for a new one."
+        },
+        "all_day": {
+          "name": "All day",
+          "description": "Apply all day instead of between start and end."
+        },
+        "summer_price": {
+          "name": "Summer price",
+          "description": "Separate price per kWh for the summer season."
+        }
+      }
+    },
+    "delete_rate_zone": {
+      "name": "Delete rate zone",
+      "description": "Delete a time-of-use electricity rate zone.",
+      "fields": {
+        "device_id": {
+          "name": "Charger",
+          "description": "The Grizzl-E charger (set up through the Grizzl-E Connect cloud)."
+        },
+        "zone_id": {
+          "name": "Rate zone ID",
+          "description": "ID of the rate zone to delete (the schedule_id attribute of its switch)."
+        }
+      }
+    },
+    "set_base_rate": {
+      "name": "Set base rate",
+      "description": "Set the base electricity price per kWh used outside rate zones.",
+      "fields": {
+        "device_id": {
+          "name": "Charger",
+          "description": "The Grizzl-E charger (set up through the Grizzl-E Connect cloud)."
+        },
+        "price": {
+          "name": "Price",
+          "description": "Price per kWh in the station's currency."
+        }
+      }
+    }
+  }
+}

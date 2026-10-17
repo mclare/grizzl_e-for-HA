@@ -16,6 +16,7 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import EntityCategory, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .cloud import GrizzleECloudEntity, first_number, is_cloud_entry, number, parse_datetime
 from .const import DOMAIN, CONF_PORTS, port_key
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,6 +24,10 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     # Get the device from hass.data
     if DOMAIN not in hass.data or entry.entry_id not in hass.data[DOMAIN]:
+        return
+
+    if is_cloud_entry(entry):
+        async_add_entities(_cloud_sensors(hass.data[DOMAIN][entry.entry_id]["coordinator"]))
         return
             
     device = hass.data[DOMAIN][entry.entry_id]["device"]
@@ -145,3 +150,143 @@ class GrizzleESensor(CoordinatorEntity, SensorEntity):
             return int(value)
             
         return value
+
+
+# --- Grizzl-E Connect cloud ----------------------------------------------------
+
+
+def _cloud_sensors(coordinator):
+    """Sensors for a cloud entry: station-wide ones, then one set per connector."""
+    sensors = [
+        GrizzleECloudSensor(
+            coordinator, "status", "Station Status", lambda e: e.station.get("status"), state_class=None
+        ),
+        GrizzleECloudSensor(
+            coordinator, "error_code", "Station Error Code", lambda e: e.station.get("errorCode"),
+            state_class=None, entity_category=EntityCategory.DIAGNOSTIC,
+        ),
+        GrizzleECloudSensor(
+            coordinator, "next_schedule_change", "Next Schedule Change",
+            lambda e: parse_datetime(e.station.get("nextScheduleTime")),
+            device_class=SensorDeviceClass.TIMESTAMP, state_class=None,
+        ),
+    ]
+    for index in range(len(coordinator.data.get("connectors") or [])):
+        sensors += [
+            GrizzleECloudSensor(
+                coordinator, "connector_status", "Status", lambda e: e.connector.get("status"),
+                connector_index=index, state_class=None,
+            ),
+            GrizzleECloudSensor(
+                coordinator, "connector_error_code", "Error Code", lambda e: e.connector.get("errorCode"),
+                connector_index=index, state_class=None, entity_category=EntityCategory.DIAGNOSTIC,
+            ),
+            GrizzleECloudSensor(
+                coordinator, "power", "Power", lambda e: number(e.connector.get("power")),
+                connector_index=index, unit=UnitOfPower.WATT, device_class=SensorDeviceClass.POWER,
+            ),
+            GrizzleECloudSensor(
+                coordinator, "current", "Current",
+                lambda e: first_number((e.charge.get("meterValues") or {}).get("currentImport")),
+                connector_index=index, unit=UnitOfElectricCurrent.AMPERE,
+                device_class=SensorDeviceClass.CURRENT,
+            ),
+            GrizzleECloudSensor(
+                coordinator, "voltage", "Voltage",
+                lambda e: first_number((e.charge.get("meterValues") or {}).get("voltage")),
+                connector_index=index, unit=UnitOfElectricPotential.VOLT,
+                device_class=SensorDeviceClass.VOLTAGE,
+            ),
+            GrizzleECloudTemperatureSensor(coordinator, index),
+            GrizzleECloudSensor(
+                coordinator, "session_energy", "Session Energy", _session_energy_kwh,
+                connector_index=index, unit=UnitOfEnergy.KILO_WATT_HOUR,
+                device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING,
+            ),
+            GrizzleECloudSensor(
+                coordinator, "session_time", "Session Time", lambda e: number(e.charge.get("duration")),
+                connector_index=index, unit=UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION,
+            ),
+            GrizzleECloudSessionCostSensor(coordinator, index),
+            GrizzleECloudSensor(
+                coordinator, "session_start", "Session Start",
+                lambda e: parse_datetime(e.charge.get("startAt")),
+                connector_index=index, device_class=SensorDeviceClass.TIMESTAMP, state_class=None,
+            ),
+        ]
+    return sensors
+
+
+def _session_energy_kwh(entity):
+    # Session energy is reported in Wh, the OCPP unit (meterStart uses it too).
+    energy = number(entity.charge.get("energy"))
+    return round(energy / 1000, 3) if energy is not None else None
+
+
+class GrizzleECloudSensor(GrizzleECloudEntity, SensorEntity):
+    """A sensor read from the Grizzl-E Connect station payload."""
+
+    def __init__(
+        self,
+        coordinator,
+        key,
+        name,
+        value_fn,
+        connector_index=None,
+        unit=None,
+        device_class=None,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=None,
+    ):
+        super().__init__(coordinator, key, name, connector_index)
+        self._value_fn = value_fn
+        self._attr_native_unit_of_measurement = unit
+        self._attr_device_class = device_class
+        self._attr_state_class = state_class
+        self._attr_entity_category = entity_category
+
+    @property
+    def native_value(self):
+        if self.connector_index is not None and self.connector is None:
+            return None
+        return self._value_fn(self)
+
+
+class GrizzleECloudTemperatureSensor(GrizzleECloudSensor):
+    """Connector temperature, reported only while a session is in progress."""
+
+    def __init__(self, coordinator, connector_index):
+        super().__init__(
+            coordinator, "temperature", "Temperature",
+            lambda e: first_number((e.charge.get("meterValues") or {}).get("temperature")),
+            connector_index=connector_index, unit=UnitOfTemperature.CELSIUS,
+            device_class=SensorDeviceClass.TEMPERATURE,
+        )
+
+    @property
+    def native_unit_of_measurement(self):
+        if self.charge.get("temperatureUnit") == "Fahrenheit":
+            return UnitOfTemperature.FAHRENHEIT
+        return UnitOfTemperature.CELSIUS
+
+
+class GrizzleECloudSessionCostSensor(GrizzleECloudSensor):
+    """Cost of the session in progress, priced with the station's energy plan.
+
+    The total restarts with every session, so ``last_reset`` is the session start.
+    """
+
+    def __init__(self, coordinator, connector_index):
+        super().__init__(
+            coordinator, "session_cost", "Session Cost", lambda e: number(e.charge.get("priceTotal")),
+            connector_index=connector_index, device_class=SensorDeviceClass.MONETARY,
+            state_class=SensorStateClass.TOTAL,
+        )
+
+    @property
+    def native_unit_of_measurement(self):
+        return self.charge.get("currency") or self.station.get("currency") or self.hass.config.currency
+
+    @property
+    def last_reset(self):
+        return parse_datetime(self.charge.get("startAt"))

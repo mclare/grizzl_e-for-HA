@@ -6,6 +6,10 @@
 
 A Home Assistant integration for Grizzl-E EVSEs (Electric Vehicle Supply Equipment, or charger), providing sensors for monitoring the WiFi Grizzl-E EVSEs.
 
+It can connect to a charger in two ways:
+- **Local**: polls the charger's built-in web interface on your network (read-only sensors).
+- **Grizzl-E Connect cloud**: uses the same cloud service as the Grizzl-E Connect app. Besides sensors, it can change the charging mode, the current limit, schedules and electricity rates, and reboot the charger.
+
 This integration works with most WiFi enabled Grizzl-E chargers (the Connect and Ultimate lines).
 
 This integration is not affiliated with United Chargers or Grizzl-E (but is also made in Ontario, Canada). Please consult [United Charger's User Manuals](https://grizzl-e.com/user-manuals) can learn more about operating Grizzl-E EVSEs.
@@ -25,6 +29,7 @@ This integration provides the following features:
 - Configurable polling interval
 - Temperature monitoring
 - Energy usage tracking
+- Cloud only: charging mode (Active / Inactive / Schedule), current limit, schedules, time-of-use rates and reboot
 
 ## Installation
 
@@ -60,10 +65,46 @@ This integration provides the following features:
 1. Go to Settings > Devices & Services
 2. Click "+ Add Integration"
 3. Search for "Grizzl-E EV"
-4. Enter the IP address or hostname of your EVSE
-5. Enter the username and password (default is usually admin/admin)
+4. Choose how to connect:
+    - **Local**: enter the IP address or hostname of your EVSE, then the username and password (default is usually admin/admin)
+    - **Grizzl-E Connect cloud (email and password)**: sign in with your Grizzl-E Connect app account. If the account has more than one charger, pick one; add the integration again for each other charger.
 
-## Available Sensors
+Existing local setups keep working unchanged. The polling interval can be changed under the integration's **Configure** button; cloud connections default to 30 seconds and can't go below 10.
+
+### Grizzl-E Connect cloud
+
+The cloud API isn't documented by United Chargers. It was reverse engineered from the Grizzl-E Connect app (see `grizzle_connect.py`) and may change without notice.
+
+Entities:
+- **Sensors**: Station Status, Station Error Code, Next Schedule Change, and for each connector: Status, Error Code, Power, Current, Voltage, Temperature, Session Energy, Session Time, Session Cost and Session Start. Current, voltage, temperature and session values are only reported while a charging session exists.
+- **Binary sensors**: Online, and for each connector: Vehicle Connected, Charging, Schedule Active
+- **Select**: Charge Mode for each connector. *Active* charges whenever a vehicle is plugged in, *Inactive* pauses charging, *Schedule* charges only inside enabled schedules.
+- **Number**: Current Limit, capped at the charger's DIP switch setting
+- **Switches**: one per schedule and rate zone, to turn it on or off. The `schedule_id` attribute is the ID used by the services below.
+- **Button**: Reboot
+
+On a Grizzl-E Duo, per-connector entities get a "Port 1" / "Port 2" suffix.
+
+Services (all take the charger's `device_id`; times are in the charger's timezone):
+- `grizzl_e.set_schedule`: create a charging schedule, or update one by `schedule_id` (fields you leave out keep their current values)
+- `grizzl_e.delete_schedule`
+- `grizzl_e.set_rate_zone`: create a time-of-use rate zone, or update one by `zone_id`
+- `grizzl_e.delete_rate_zone`
+- `grizzl_e.set_base_rate`: the price per kWh used outside rate zones
+
+```yaml
+action: grizzl_e.set_schedule
+data:
+  device_id: 0123456789abcdef0123456789abcdef
+  name: Off-peak
+  start: "23:00"
+  end: "07:00"
+  days: [monday, tuesday, wednesday, thursday, friday]
+```
+
+If the cloud stops accepting the saved credentials, Home Assistant asks you to sign in again.
+
+## Available Sensors (local)
 
 - **Current**: Current charging current (A)
 - **Voltage**: Line voltage (V)

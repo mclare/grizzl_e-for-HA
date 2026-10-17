@@ -5,24 +5,33 @@ from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+import homeassistant.helpers.config_validation as cv
 
 from .const import (
     DOMAIN, DEFAULT_SCAN_INTERVAL, 
     REQUEST_TIMEOUT, CONNECT_TIMEOUT, SOCKET_TIMEOUT
 )
+from .cloud import CLOUD_PLATFORMS, async_setup_cloud_entry, is_cloud_entry
 from .device import GrizzleEDevice
+from .services import async_setup_services
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = ["sensor", "binary_sensor"]
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Grizzl-E component."""
     hass.data.setdefault(DOMAIN, {})
+    async_setup_services(hass)
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Grizzl-E from a config entry."""
+    if is_cloud_entry(entry):
+        return await async_setup_cloud_entry(hass, entry)
+
     host = entry.data["host"]
     username = entry.data["username"]
     password = entry.data["password"]
@@ -86,7 +95,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    platforms = CLOUD_PLATFORMS if is_cloud_entry(entry) else PLATFORMS
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, platforms)
     
     if unload_ok and DOMAIN in hass.data and entry.entry_id in hass.data[DOMAIN]:
         # Remove the entry

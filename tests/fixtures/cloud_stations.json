@@ -1,0 +1,338 @@
+{
+  "stations": [
+    {
+      "id": "000000000000000000000002",
+      "identity": "GRD-L0000000001",
+      "serialNumber": "GRD-L0000000001",
+      "online": true,
+      "mode": "Active",
+      "status": "Available",
+      "errorCode": "NoError",
+      "schedule": {
+        "enabled": true,
+        "weekdaysEnabled": false,
+        "weekendsEnabled": false
+      },
+      "connectors": [
+        {
+          "type": "J1772",
+          "maxPower": 9600,
+          "status": "Available",
+          "power": 0,
+          "errorCode": "NoError",
+          "_id": "6a6b704577acb713736f7cb5",
+          "mode": "Schedule",
+          "charge": null,
+          "statusChangedAt": "2026-10-10T17:18:22.247Z",
+          "isActiveBySchedule": true,
+          "nextScheduleTime": "2026-10-10T23:00:00.000Z"
+        },
+        {
+          "type": "J1772",
+          "maxPower": 9600,
+          "status": "SuspendedEV",
+          "power": 0,
+          "errorCode": "NoError",
+          "_id": "6a6b704577acb713736f7cb6",
+          "mode": "Schedule",
+          "charge": {
+            "_id": "6aca52fee849914906061047",
+            "user": "000000000000000000000001",
+            "sharedUser": {
+              "_id": "000000000000000000000001",
+              "firstName": "Test",
+              "lastName": "User",
+              "email": "user@example.com"
+            },
+            "station": "000000000000000000000002",
+            "stationSerialNumber": "GRD-L0000000001",
+            "stationAddress": {
+              "country": "US",
+              "province": "ID",
+              "city": "Springfield",
+              "street_1": "1 Example St",
+              "zip": "00000"
+            },
+            "idTag": "uc_default_auth",
+            "connectorId": 2,
+            "startAt": "2026-10-10T15:00:13.000Z",
+            "duration": 10401,
+            "energy": 0,
+            "status": 0,
+            "power": 0,
+            "meterValues": {
+              "currentImport": [
+                0
+              ],
+              "currentOffered": null,
+              "energyActiveImportRegister": [
+                0
+              ],
+              "powerActiveImport": [
+                0
+              ],
+              "SoC": null,
+              "temperature": [
+                10
+              ],
+              "voltage": [
+                243
+              ],
+              "priceKW": [
+                0.0923
+              ],
+              "date": [
+                "2026-10-10T17:53:34.000Z"
+              ]
+            },
+            "hasMeterValues": true,
+            "currency": "USD",
+            "priceKW": 0.0923,
+            "priceTotal": 0,
+            "meterStart": 577449,
+            "averageCurrent": 0,
+            "chargingDuration": 0,
+            "minVoltage": 242,
+            "maxVoltage": 246,
+            "avgVoltage": 244.10434782608695,
+            "initialVoltage": 0,
+            "maxPower": 0,
+            "temperatureUnit": "Celsius",
+            "currentMVCount": 0,
+            "voltageMVCount": 115,
+            "isCommercial": false,
+            "stationLocation": "6a8392666955aa84a4989d13",
+            "costByZones": [],
+            "__id": 6745527,
+            "__v": 0,
+            "maxTemperature": 10
+          },
+          "statusChangedAt": "2026-10-10T15:00:16.067Z",
+          "isActiveBySchedule": true,
+          "nextScheduleTime": "2026-10-10T23:00:00.000Z"
+        }
+      ],
+      "currency": "USD",
+      "priceKW": 0,
+      "locationData": {
+        "timezone": "America/Boise",
+        "autoselectTimezone": false
+      },
+      "bootNotification": {
+        "chargePointModel": "GRD 40A 2025",
+        "chargePointSerialNumber": "GRD-L0000000001",
+        "chargePointVendor": "UnitedChargers",
+        "firmwareVersion": "UDGRW070L-04.03.2",
+        "meterType": "0",
+        "timestamp": "2026-10-10T17:50:35.771Z"
+      },
+      "firmwareStatuses": [],
+      "vendorData": {
+        "formattedSerialNumber": "GRD-L0000000001",
+        "chargerType": "GRD-L",
+        "modelCode": " GRD-077-W-14-25J40-25J40-A-GB",
+        "creationTime": "2026-07-30 11:39:50",
+        "club": false,
+        "color": "Black",
+        "connectors": [
+          [],
+          []
+        ]
+      },
+      "strategy": "Default",
+      "model": {
+        "_id": "6920316908d24531e1596f49",
+        "vendor": "6622681d7af4c33fc6fed793",
+        "name": "Grizzl-E Duo 40A",
+        "displayName": "Grizzl-E Duo 40A",
+        "addToUserData": {
+          "supportsAddByQRCode": false,
+          "image": "",
+          "instruction": "",
+          "_id": "6a6328c4c754c83c3e5affde"
+        },
+        "images": [
+          "https://connect-cdn.nyc3.cdn.digitaloceanspaces.com/models/duo/black.png",
+          "https://connect-cdn.nyc3.cdn.digitaloceanspaces.com/models/duo/avalanche.png",
+          "https://connect-cdn.nyc3.cdn.digitaloceanspaces.com/models/duo/bear-black.png",
+          "https://connect-cdn.nyc3.cdn.digitaloceanspaces.com/models/duo/bear-white.png"
+        ],
+        "colors": [
+          "Black",
+          "Avalanche",
+          "Bear Black",
+          "Bear White"
+        ],
+        "serialNumberStartsWith": "GRD-L",
+        "minSerialNumberLength": 5,
+        "maxSerialNumberLength": 25,
+        "connectors": [
+          {
+            "maxPower": 9.6,
+            "type": "type1"
+          },
+          {
+            "maxPower": 9.6,
+            "type": "type1"
+          }
+        ],
+        "stationAppStatuses": [],
+        "strategy": "Default",
+        "maxCurrent": 40,
+        "minCurrent": 16,
+        "defaultCurrentLimit": null,
+        "numberOfPhases": "OnePhase",
+        "club": true,
+        "supportsOcppUnlock": true,
+        "__v": 0,
+        "unlockOcppRegionalPrices": {
+          "MX": "600",
+          "CA": "600"
+        },
+        "clubDepositRefundAmount": null,
+        "clubDepositRefundAvailableAfterEnergykWh": null,
+        "clubRewardInitialLevel": null,
+        "clubRewardInitialLevelIfConverted": null
+      },
+      "smartCharging": {
+        "applied": true,
+        "appliedAt": "2026-10-10T17:54:31.378Z",
+        "appliedUntil": "2027-10-10T17:54:31.378Z",
+        "currentLimit": 32,
+        "weekdaysCurrentLimit": 32,
+        "weekendsCurrentLimit": 32
+      },
+      "supportedOcppProfiles": {
+        "profiles": [
+          "Core",
+          "FirmwareManagement",
+          "SmartCharging",
+          "RemoteTrigger"
+        ],
+        "updatedAt": "2026-08-17T23:05:56.929Z",
+        "firmwareVersion": "UDGRW070L-04.03.2"
+      },
+      "pricesByZone": [
+        {
+          "startHours": 9,
+          "startMinutes": 0,
+          "endHours": 17,
+          "endMinutes": 0,
+          "startHours2": 20,
+          "startMinutes2": 0,
+          "endHours2": 6,
+          "endMinutes2": 0,
+          "priceKW": 0.0923,
+          "name": "Winter",
+          "useSeason": false,
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "allDay": false,
+          "_id": "6ac6d45d0528d5cbde572d6f",
+          "scheduleEnabled": true
+        },
+        {
+          "startHours": 0,
+          "startMinutes": 0,
+          "endHours": 0,
+          "endMinutes": 0,
+          "priceKW": 0.0923,
+          "name": "Winter2",
+          "useSeason": false,
+          "days": [
+            0
+          ],
+          "allDay": true,
+          "_id": "6ac6d4700528d5cbde57318b",
+          "scheduleEnabled": true
+        },
+        {
+          "startHours": 23,
+          "startMinutes": 0,
+          "endHours": 7,
+          "endMinutes": 0,
+          "name": "Off-peak123",
+          "days": [],
+          "allDay": false,
+          "isSchedule": true,
+          "scheduleEnabled": true,
+          "currentLimit": null,
+          "connectorId": 0,
+          "_id": "6aca7bd1f68a64e58409bff0"
+        }
+      ],
+      "seasonsSettings": {
+        "winterStartDay": 1,
+        "winterStartMonth": 9,
+        "summerStartDay": 1,
+        "summerStartMonth": 5
+      },
+      "holidaysSettings": {
+        "enabled": true,
+        "priceKW": 0.0748
+      },
+      "holidays": [],
+      "displayName": "GRD-L0000000001",
+      "sharedWith": [],
+      "user": {
+        "_id": "000000000000000000000001",
+        "firstName": "Test",
+        "lastName": "User",
+        "email": "user@example.com",
+        "country_code": "US",
+        "country": {
+          "_id": "69b8569d178d5476f2de189c",
+          "code": "US",
+          "currency": "USD"
+        }
+      },
+      "isSharedAccess": false,
+      "dipSwitchCurrentLimit": 32,
+      "country_code": "US",
+      "isTesting": false,
+      "chargersGroupSettings": {
+        "isPrioritized": false,
+        "phase": "L1"
+      },
+      "isBusinessEnabled": false,
+      "club": false,
+      "stationLocation": {
+        "_id": "6a8392666955aa84a4989d13",
+        "name": "Outside",
+        "address": {
+          "country": "US",
+          "province": "ID",
+          "city": "Springfield",
+          "street_1": "1 Example St",
+          "zip": "00000"
+        },
+        "location": {
+          "type": "Point",
+          "coordinates": [
+            0.0,
+            0.0
+          ]
+        },
+        "isHidden": false,
+        "owner": "000000000000000000000001",
+        "images": [],
+        "isCommercial": false,
+        "facilities": [],
+        "isValidatedAddress": false,
+        "isClubOnly": false,
+        "workingHours": [],
+        "__v": 0
+      },
+      "isActiveBySchedule": true,
+      "nextScheduleTime": "2026-10-10T23:00:00.000Z",
+      "powerSharingMode": 0
+    }
+  ],
+  "groups": []
+}

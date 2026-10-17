@@ -1,8 +1,9 @@
 import logging
-from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass, BinarySensorEntity
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .cloud import PLUGGED_IN_STATUSES, GrizzleECloudEntity, is_cloud_entry
 from .const import DOMAIN, DEFAULT_NAME, CONF_PORTS, port_key
 
 _LOGGER = logging.getLogger(__name__)
@@ -10,6 +11,10 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     # Get the device and coordinator from hass.data
     if DOMAIN not in hass.data or entry.entry_id not in hass.data[DOMAIN]:
+        return
+
+    if is_cloud_entry(entry):
+        async_add_entities(_cloud_binary_sensors(hass.data[DOMAIN][entry.entry_id]["coordinator"]))
         return
         
     device = hass.data[DOMAIN][entry.entry_id]["device"]
@@ -61,3 +66,55 @@ class GrizzleEBinarySensor(CoordinatorEntity, BinarySensorEntity):
         if isinstance(val, (int, float)):
             return val != 0
         return bool(val)
+
+
+# --- Grizzl-E Connect cloud ----------------------------------------------------
+
+
+def _connector_status(entity):
+    return entity.connector.get("status")
+
+
+def _cloud_binary_sensors(coordinator):
+    sensors = [
+        GrizzleECloudBinarySensor(
+            coordinator, "online", "Online", lambda e: e.station.get("online"),
+            device_class=BinarySensorDeviceClass.CONNECTIVITY, entity_category=EntityCategory.DIAGNOSTIC,
+        ),
+    ]
+    for index in range(len(coordinator.data.get("connectors") or [])):
+        sensors += [
+            GrizzleECloudBinarySensor(
+                coordinator, "vehicle_connected", "Vehicle Connected",
+                lambda e: None if _connector_status(e) is None else _connector_status(e) in PLUGGED_IN_STATUSES,
+                connector_index=index, device_class=BinarySensorDeviceClass.PLUG,
+            ),
+            GrizzleECloudBinarySensor(
+                coordinator, "charging", "Charging",
+                lambda e: None if _connector_status(e) is None else _connector_status(e) == "Charging",
+                connector_index=index, device_class=BinarySensorDeviceClass.BATTERY_CHARGING,
+            ),
+            GrizzleECloudBinarySensor(
+                coordinator, "active_by_schedule", "Schedule Active",
+                lambda e: e.connector.get("isActiveBySchedule"),
+                connector_index=index,
+            ),
+        ]
+    return sensors
+
+
+class GrizzleECloudBinarySensor(GrizzleECloudEntity, BinarySensorEntity):
+    """A binary sensor read from the Grizzl-E Connect station payload."""
+
+    def __init__(self, coordinator, key, name, value_fn, connector_index=None, device_class=None, entity_category=None):
+        super().__init__(coordinator, key, name, connector_index)
+        self._value_fn = value_fn
+        self._attr_device_class = device_class
+        self._attr_entity_category = entity_category
+
+    @property
+    def is_on(self):
+        if self.connector_index is not None and self.connector is None:
+            return None
+        value = self._value_fn(self)
+        return None if value is None else bool(value)
