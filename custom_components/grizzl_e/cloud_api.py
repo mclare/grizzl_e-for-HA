@@ -4,6 +4,9 @@ An asyncio port of grizzle_connect.py (reverse engineered from the Grizzl-E
 Connect Android app v1.6.1). It talks to United Chargers' cloud
 (https://connect-api.unitedchargers.com), not to the charger's local web UI.
 The API is undocumented and may change without notice.
+
+``base_url`` can point the client at a self-hosted server that implements the
+same API instead (see ``normalize_base_url``).
 """
 from __future__ import annotations
 
@@ -14,6 +17,7 @@ from collections.abc import Callable
 from typing import Any
 
 import aiohttp
+from yarl import URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,6 +49,25 @@ class GrizzleConnectAuthError(GrizzleConnectError):
 
 class GrizzleConnectNotVerifiedError(GrizzleConnectAuthError):
     """The account's email address hasn't been verified in the app yet."""
+
+
+def normalize_base_url(value: str | None) -> str:
+    """Return the API base URL for a user-supplied server address.
+
+    Empty means United Chargers' cloud. Otherwise the address must be an http(s)
+    URL; a path is kept (for a server behind a reverse proxy) and a trailing
+    slash is dropped. Raises ValueError for anything else.
+    """
+    value = (value or "").strip()
+    if not value:
+        return BASE_URL
+    try:
+        url = URL(value)
+    except (TypeError, ValueError) as err:
+        raise ValueError(f"Invalid server URL: {value!r}") from err
+    if url.scheme not in ("http", "https") or not url.host:
+        raise ValueError(f"Server URL must start with http:// or https://: {value!r}")
+    return str(url.with_query(None).with_fragment(None)).rstrip("/")
 
 
 def station_id(station: dict[str, Any]) -> str | None:

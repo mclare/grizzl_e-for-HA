@@ -24,6 +24,9 @@ CONF_EMAIL = "email"
 CONF_TOKEN = "token"
 CONF_REFRESH_TOKEN = "refresh_token"
 CONF_STATION_ID = "station_id"
+# Optional: a self-hosted server that implements the Grizzl-E Connect API,
+# used instead of United Chargers' cloud. Absent means the cloud.
+CONF_SERVER_URL = "server_url"
 
 # Default values
 DEFAULT_PORTS = 1

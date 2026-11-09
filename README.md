@@ -67,7 +67,7 @@ This integration provides the following features:
 3. Search for "Grizzl-E EV"
 4. Choose how to connect:
     - **Local**: enter the IP address or hostname of your EVSE, then the username and password (default is usually admin/admin)
-    - **Grizzl-E Connect cloud (email and password)**: sign in with your Grizzl-E Connect app account. If the account has more than one charger, pick one; add the integration again for each other charger.
+    - **Grizzl-E Connect cloud (email and password)**: sign in with your Grizzl-E Connect app account. If the account has more than one charger, pick one; add the integration again for each other charger. The optional **Server URL** field is only for a [self-hosted server](#self-hosted-server-optional); leave it empty for the cloud.
 
 Existing local setups keep working unchanged. The polling interval can be changed under the integration's **Configure** button; cloud connections default to 30 seconds and can't go below 10.
 
@@ -103,6 +103,12 @@ data:
 ```
 
 If the cloud stops accepting the saved credentials, Home Assistant asks you to sign in again.
+
+### Self-hosted server (optional)
+
+The cloud connection can talk to a server on your own network instead of United Chargers' cloud, as long as that server implements the same API. One such server is [grizzle-local-server](https://github.com/lunarminus/grizzle-local-server), which the charger itself connects to, so nothing leaves your LAN.
+
+To use one, choose **Grizzl-E Connect cloud** when adding the integration, enter the server's address in **Server URL** (for example `http://192.168.1.10:9000`), and sign in with the account configured on that server. All entities and services work the same way. Leaving the field empty uses the Grizzl-E Connect cloud, exactly as before.
 
 ## Available Sensors (local)
 
