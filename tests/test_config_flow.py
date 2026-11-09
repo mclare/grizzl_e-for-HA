@@ -220,11 +220,38 @@ async def test_local_options_unchanged(hass):
 # --- self-hosted server ------------------------------------------------------------
 
 
-async def test_cloud_form_offers_optional_server_url(hass):
+async def test_cloud_form_prefills_the_cloud_server(hass):
     result = await start(hass, "cloud")
     assert set(result["data_schema"].schema) == {CONF_EMAIL, CONF_PASSWORD, CONF_SERVER_URL}
-    # Still valid without it, so signing in to the cloud is unchanged.
-    assert result["data_schema"]({CONF_EMAIL: "user@example.com", CONF_PASSWORD: "secret"})
+    # The field shows the cloud address, so signing in to the cloud needs no extra input.
+    filled = result["data_schema"]({CONF_EMAIL: "user@example.com", CONF_PASSWORD: "secret"})
+    assert filled[CONF_SERVER_URL] == API
+
+
+@pytest.mark.parametrize("address", [API, f"{API}/", ""])
+async def test_default_or_cleared_server_url_is_the_cloud(hass, aioclient_mock, address):
+    """Submitting the prefilled address (or clearing it) creates a plain cloud entry."""
+    aioclient_mock.post(f"{API}/client/auth/login", json={"token": "t", "refreshToken": "r", "isVerified": True})
+    aioclient_mock.get(f"{API}/client/stations", json=copy.deepcopy(STATIONS))
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_EMAIL: "user@example.com", CONF_PASSWORD: "secret", CONF_SERVER_URL: address}
+    )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert CONF_SERVER_URL not in result["data"]
+
+
+async def test_form_keeps_the_entered_server_after_an_error(hass, aioclient_mock):
+    aioclient_mock.post(f"{SERVER}/client/auth/login", status=HTTPStatus.UNAUTHORIZED, json={"message": "no"})
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_EMAIL: "admin@local", CONF_PASSWORD: "bad", CONF_SERVER_URL: SERVER}
+    )
+    assert result["errors"] == {"base": "invalid_auth"}
+    suggested = {
+        str(key): (key.description or {}).get("suggested_value") for key in result["data_schema"].schema
+    }
+    assert suggested[CONF_SERVER_URL] == SERVER and suggested[CONF_EMAIL] == "admin@local"
 
 
 async def test_self_hosted_server_login(hass, aioclient_mock):

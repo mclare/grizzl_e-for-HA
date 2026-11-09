@@ -205,14 +205,15 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Required(CONF_PASSWORD): TextSelector(
                             TextSelectorConfig(type=TextSelectorType.PASSWORD)
                         ),
-                        vol.Optional(CONF_SERVER_URL): TextSelector(
+                        # Prefilled with the cloud; only changed for a self-hosted server.
+                        vol.Optional(CONF_SERVER_URL, default=BASE_URL): TextSelector(
                             TextSelectorConfig(type=TextSelectorType.URL)
                         ),
                     }
                 ),
                 {
                     CONF_EMAIL: user_input[CONF_EMAIL],
-                    CONF_SERVER_URL: user_input.get(CONF_SERVER_URL),
+                    CONF_SERVER_URL: user_input.get(CONF_SERVER_URL) or BASE_URL,
                 }
                 if user_input
                 else {},

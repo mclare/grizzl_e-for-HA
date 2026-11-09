@@ -31,10 +31,10 @@
         "data": {
           "email": "Email",
           "password": "Password",
-          "server_url": "Server URL (optional)"
+          "server_url": "Server URL"
         },
         "data_description": {
-          "server_url": "Leave empty to use the Grizzl-E Connect cloud. To use a self-hosted server that implements the same API, enter its address, for example http://192.168.1.10:9000, and sign in with the account configured on that server."
+          "server_url": "Leave this as it is to use the Grizzl-E Connect cloud. To use a self-hosted server that implements the same API, replace it with that server's address, for example http://192.168.1.10:9000, and sign in with the account configured on that server."
         }
       },
       "station": {
@@ -59,7 +59,7 @@
       "unknown": "Unknown error",
       "account_not_verified": "This account's email address isn't verified yet. Finish verification in the Grizzl-E Connect app first.",
       "station_not_found": "This charger isn't on that Grizzl-E Connect account.",
-      "invalid_server_url": "Enter a full address starting with http:// or https://, or leave it empty for the Grizzl-E Connect cloud."
+      "invalid_server_url": "Enter a full address starting with http:// or https://."
     },
     "abort": {
       "already_configured": "This charger is already configured",
