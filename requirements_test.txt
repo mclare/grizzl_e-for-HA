@@ -1,3 +1,6 @@
 # Development requirements
 pytest
 pytest-homeassistant-custom-component
+# Older Home Assistant (the Python 3.11 job) reads time zones from the system, and newer
+# runner images no longer ship legacy names like US/Pacific that its test fixtures use.
+tzdata
