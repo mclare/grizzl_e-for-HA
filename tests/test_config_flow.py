@@ -15,6 +15,7 @@ from custom_components.grizzl_e.const import (
     CONF_EMAIL,
     CONF_PASSWORD,
     CONF_REFRESH_TOKEN,
+    CONF_SERVER_URL,
     CONF_STATION_ID,
     CONF_TOKEN,
     CONNECTION_CLOUD,
@@ -22,6 +23,7 @@ from custom_components.grizzl_e.const import (
 )
 
 API = "https://connect-api.unitedchargers.com"
+SERVER = "http://192.168.1.10:9000"  # a self-hosted server that implements the same API
 STATION_ID = "000000000000000000000002"
 STATIONS = json.loads((Path(__file__).parent / "fixtures" / "cloud_stations.json").read_text())
 
@@ -213,3 +215,112 @@ async def test_local_options_unchanged(hass):
     schema = result["data_schema"]
     assert schema({})["scan_interval"] == 5
     assert schema({"scan_interval": 1})["scan_interval"] == 1
+
+
+# --- self-hosted server ------------------------------------------------------------
+
+
+async def test_cloud_form_prefills_the_cloud_server(hass):
+    result = await start(hass, "cloud")
+    assert set(result["data_schema"].schema) == {CONF_EMAIL, CONF_PASSWORD, CONF_SERVER_URL}
+    # The field shows the cloud address, so signing in to the cloud needs no extra input.
+    filled = result["data_schema"]({CONF_EMAIL: "user@example.com", CONF_PASSWORD: "secret"})
+    assert filled[CONF_SERVER_URL] == API
+
+
+@pytest.mark.parametrize("address", [API, f"{API}/", ""])
+async def test_default_or_cleared_server_url_is_the_cloud(hass, aioclient_mock, address):
+    """Submitting the prefilled address (or clearing it) creates a plain cloud entry."""
+    aioclient_mock.post(f"{API}/client/auth/login", json={"token": "t", "refreshToken": "r", "isVerified": True})
+    aioclient_mock.get(f"{API}/client/stations", json=copy.deepcopy(STATIONS))
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_EMAIL: "user@example.com", CONF_PASSWORD: "secret", CONF_SERVER_URL: address}
+    )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert CONF_SERVER_URL not in result["data"]
+
+
+async def test_form_keeps_the_entered_server_after_an_error(hass, aioclient_mock):
+    aioclient_mock.post(f"{SERVER}/client/auth/login", status=HTTPStatus.UNAUTHORIZED, json={"message": "no"})
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_EMAIL: "admin@local", CONF_PASSWORD: "bad", CONF_SERVER_URL: SERVER}
+    )
+    assert result["errors"] == {"base": "invalid_auth"}
+    suggested = {
+        str(key): (key.description or {}).get("suggested_value") for key in result["data_schema"].schema
+    }
+    assert suggested[CONF_SERVER_URL] == SERVER and suggested[CONF_EMAIL] == "admin@local"
+
+
+async def test_self_hosted_server_login(hass, aioclient_mock):
+    aioclient_mock.post(f"{SERVER}/client/auth/login", json={"token": "t", "refreshToken": "r", "isVerified": True})
+    aioclient_mock.get(f"{SERVER}/client/stations", json=copy.deepcopy(STATIONS))
+
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {CONF_EMAIL: "admin@local", CONF_PASSWORD: "secret", CONF_SERVER_URL: f" {SERVER}/ "},
+    )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["data"] == {
+        CONF_CONNECTION_TYPE: CONNECTION_CLOUD,
+        CONF_STATION_ID: STATION_ID,
+        CONF_EMAIL: "admin@local",
+        CONF_PASSWORD: "secret",
+        CONF_TOKEN: "t",
+        CONF_REFRESH_TOKEN: "r",
+        CONF_SERVER_URL: SERVER,
+    }
+    # Nothing was sent to United Chargers.
+    assert aioclient_mock.call_count == 2
+    assert all(str(call[1]).startswith(SERVER) for call in aioclient_mock.mock_calls)
+
+
+@pytest.mark.parametrize("address", ["192.168.1.10:9000", "ftp://192.168.1.10", "not a url", "http://"])
+async def test_invalid_server_url(hass, aioclient_mock, address):
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_EMAIL: "admin@local", CONF_PASSWORD: "secret", CONF_SERVER_URL: address}
+    )
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {CONF_SERVER_URL: "invalid_server_url"}
+    assert aioclient_mock.call_count == 0
+
+
+async def test_self_hosted_server_unreachable(hass, aioclient_mock):
+    aioclient_mock.post(f"{SERVER}/client/auth/login", exc=TimeoutError)
+    result = await start(hass, "cloud")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_EMAIL: "admin@local", CONF_PASSWORD: "secret", CONF_SERVER_URL: SERVER}
+    )
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "cannot_connect"}
+
+
+async def test_reauth_uses_the_entry_server(hass, aioclient_mock):
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id=STATION_ID,
+        data={
+            CONF_CONNECTION_TYPE: CONNECTION_CLOUD,
+            CONF_STATION_ID: STATION_ID,
+            CONF_EMAIL: "admin@local",
+            CONF_PASSWORD: "old",
+            CONF_TOKEN: "old",
+            CONF_REFRESH_TOKEN: "old",
+            CONF_SERVER_URL: SERVER,
+        },
+    )
+    entry.add_to_hass(hass)
+    aioclient_mock.post(f"{SERVER}/client/auth/login", json={"token": "new", "refreshToken": "new-r"})
+    aioclient_mock.get(f"{SERVER}/client/stations", json=copy.deepcopy(STATIONS))
+
+    result = await start_reauth(hass, entry)
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {CONF_PASSWORD: "new-pw"})
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "reauth_successful"
+    assert entry.data[CONF_TOKEN] == "new"
+    assert entry.data[CONF_SERVER_URL] == SERVER
+    assert all(str(call[1]).startswith(SERVER) for call in aioclient_mock.mock_calls)

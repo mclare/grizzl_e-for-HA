@@ -6,6 +6,7 @@
     - Charge Mode select (Active / Inactive / Schedule), Current Limit number, Reboot button, and a switch per schedule or rate zone
     - Services to create, update and delete schedules and rate zones, and to set the base electricity rate
     - Expired tokens are refreshed automatically; if the cloud rejects the credentials, Home Assistant asks you to sign in again
+- **Server URL for the cloud connection**: prefilled with United Chargers' cloud. Change it to point the integration at a self-hosted server that implements the Grizzl-E Connect API; leave it as it is and nothing changes.
 - Existing local entries are unchanged: same entities and unique IDs
 - The config flow no longer imports `async_timeout`, which current Home Assistant doesn't ship
 - The options flow works on Home Assistant versions before 2024.11 again

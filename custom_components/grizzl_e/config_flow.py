@@ -19,10 +19,12 @@ from homeassistant.helpers.selector import (
 
 from .cloud import is_cloud_entry
 from .cloud_api import (
+    BASE_URL,
     GrizzleConnectAuthError,
     GrizzleConnectClient,
     GrizzleConnectError,
     GrizzleConnectNotVerifiedError,
+    normalize_base_url,
     station_id,
 )
 from .const import (
@@ -33,6 +35,7 @@ from .const import (
     CONF_PORTS,
     CONF_REFRESH_TOKEN,
     CONF_SCAN_INTERVAL,
+    CONF_SERVER_URL,
     CONF_STATION_ID,
     CONF_TOKEN,
     CONF_USERNAME,
@@ -168,12 +171,19 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Log in to Grizzl-E Connect with email and password."""
         errors = {}
         if user_input is not None:
-            client = GrizzleConnectClient(
-                async_get_clientsession(self.hass),
-                email=user_input[CONF_EMAIL],
-                password=user_input[CONF_PASSWORD],
-            )
-            errors = await self._async_fetch_stations(client)
+            try:
+                base_url = normalize_base_url(user_input.get(CONF_SERVER_URL))
+            except ValueError:
+                base_url = None
+                errors = {CONF_SERVER_URL: "invalid_server_url"}
+            if base_url is not None:
+                client = GrizzleConnectClient(
+                    async_get_clientsession(self.hass),
+                    email=user_input[CONF_EMAIL],
+                    password=user_input[CONF_PASSWORD],
+                    base_url=base_url,
+                )
+                errors = await self._async_fetch_stations(client)
             if not errors:
                 self._cloud_data = {
                     CONF_EMAIL: user_input[CONF_EMAIL],
@@ -181,6 +191,9 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_TOKEN: client.token,
                     CONF_REFRESH_TOKEN: client.refresh_token,
                 }
+                if base_url != BASE_URL:
+                    # Only stored for a self-hosted server, so cloud entries look as before.
+                    self._cloud_data[CONF_SERVER_URL] = base_url
                 return await self.async_step_station()
 
         return self.async_show_form(
@@ -192,9 +205,18 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Required(CONF_PASSWORD): TextSelector(
                             TextSelectorConfig(type=TextSelectorType.PASSWORD)
                         ),
+                        # Prefilled with the cloud; only changed for a self-hosted server.
+                        vol.Optional(CONF_SERVER_URL, default=BASE_URL): TextSelector(
+                            TextSelectorConfig(type=TextSelectorType.URL)
+                        ),
                     }
                 ),
-                {CONF_EMAIL: user_input[CONF_EMAIL]} if user_input else {},
+                {
+                    CONF_EMAIL: user_input[CONF_EMAIL],
+                    CONF_SERVER_URL: user_input.get(CONF_SERVER_URL) or BASE_URL,
+                }
+                if user_input
+                else {},
             ),
             errors=errors,
         )
@@ -264,6 +286,7 @@ class GrizzleEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 async_get_clientsession(self.hass),
                 email=entry.data[CONF_EMAIL],
                 password=user_input[CONF_PASSWORD],
+                base_url=entry.data.get(CONF_SERVER_URL) or BASE_URL,
             )
             errors = await self._async_fetch_stations(client)
             if not errors and entry.data[CONF_STATION_ID] not in self._stations:

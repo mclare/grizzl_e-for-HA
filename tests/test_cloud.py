@@ -21,6 +21,7 @@ from custom_components.grizzl_e.const import (
     CONF_EMAIL,
     CONF_PASSWORD,
     CONF_REFRESH_TOKEN,
+    CONF_SERVER_URL,
     CONF_STATION_ID,
     CONF_TOKEN,
     CONNECTION_CLOUD,
@@ -479,3 +480,51 @@ async def test_station_missing_from_account_retries(hass, aioclient_mock):
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     assert entry.state is ConfigEntryState.SETUP_RETRY
+
+
+# --- self-hosted server ------------------------------------------------------------
+
+
+async def test_entry_with_server_url_talks_only_to_that_server(hass, aioclient_mock):
+    """An entry with a server URL polls and controls that server, never the cloud."""
+    server = "http://192.168.1.10:9000"
+    aioclient_mock.get(f"{server}/client/stations", json=stations_payload())
+    aioclient_mock.post(f"{server}/client/stations/{STATION_ID}/reboot", json={"status": "Accepted"})
+    entry = cloud_entry(**{CONF_SERVER_URL: server})
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert entry.state is ConfigEntryState.LOADED
+
+    button = next(
+        e.entity_id for e in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id) if e.domain == "button"
+    )
+    await hass.services.async_call("button", "press", {"entity_id": button}, blocking=True)
+    assert any(call[0] == "POST" and str(call[1]).endswith("/reboot") for call in aioclient_mock.mock_calls)
+    assert all(str(call[1]).startswith(server) for call in aioclient_mock.mock_calls)
+
+
+@pytest.mark.parametrize(
+    ("address", "expected"),
+    [
+        (None, API),
+        ("", API),
+        ("   ", API),
+        ("http://192.168.1.10:9000", "http://192.168.1.10:9000"),
+        (" http://192.168.1.10:9000/ ", "http://192.168.1.10:9000"),
+        ("https://charger.example.net/grizzle/", "https://charger.example.net/grizzle"),
+        ("HTTP://NAS.local:9000", "http://nas.local:9000"),
+    ],
+)
+def test_normalize_base_url(address, expected):
+    from custom_components.grizzl_e.cloud_api import normalize_base_url
+
+    assert normalize_base_url(address) == expected
+
+
+@pytest.mark.parametrize("address", ["192.168.1.10:9000", "nas.local", "ftp://nas.local", "http://", "http:///path"])
+def test_normalize_base_url_rejects(address):
+    from custom_components.grizzl_e.cloud_api import normalize_base_url
+
+    with pytest.raises(ValueError):
+        normalize_base_url(address)

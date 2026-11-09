@@ -18,6 +18,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 
 from .cloud_api import (
+    BASE_URL,
     GrizzleConnectAuthError,
     GrizzleConnectClient,
     GrizzleConnectError,
@@ -29,6 +30,7 @@ from .const import (
     CONF_PASSWORD,
     CONF_REFRESH_TOKEN,
     CONF_SCAN_INTERVAL,
+    CONF_SERVER_URL,
     CONF_STATION_ID,
     CONF_TOKEN,
     CONNECTION_CLOUD,
@@ -68,6 +70,7 @@ def create_cloud_client(hass: HomeAssistant, entry: ConfigEntry) -> GrizzleConne
         token=entry.data.get(CONF_TOKEN),
         refresh_token=entry.data.get(CONF_REFRESH_TOKEN),
         on_tokens_updated=tokens_updated,
+        base_url=entry.data.get(CONF_SERVER_URL) or BASE_URL,
     )
 
 
